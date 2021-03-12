@@ -24,7 +24,7 @@ public abstract class AbstractEntity implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_last_modified")
-    private Date dateModified;
+    private Date dateLastModified;
 
     @Version
     @Column(name = "version")
@@ -37,12 +37,12 @@ public abstract class AbstractEntity implements Serializable {
     @PrePersist
     protected void prePersist() {
         dateCreated = new Date();
-        dateModified = new Date();
+        dateLastModified = new Date();
     }
 
     @PreUpdate
     protected void preUpdate() {
-        dateModified = new Date();
+        dateLastModified = new Date();
     }
 
     @PreRemove

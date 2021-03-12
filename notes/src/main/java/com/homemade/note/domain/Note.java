@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 
 @Getter
 @Setter
@@ -16,8 +18,12 @@ public class Note extends AbstractDomainModel {
 
     private Long id;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String note;
+
+    private Long userId;
 
 }
