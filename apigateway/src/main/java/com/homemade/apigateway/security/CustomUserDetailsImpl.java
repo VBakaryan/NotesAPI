@@ -42,7 +42,7 @@ public class CustomUserDetailsImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User " + loginToLowerCase + " was not found in the database");
         }
 
-        return new UserPrincipal(user.getEmail(), user.getPassword(),
+        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(),
                     true, true, true, true, new ArrayList<>());
     }
 

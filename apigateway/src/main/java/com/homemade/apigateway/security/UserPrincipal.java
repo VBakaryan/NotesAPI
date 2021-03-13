@@ -11,6 +11,10 @@ public class UserPrincipal extends User {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 9034840503529809003L;
 
+    /**
+     * User identifier
+     */
+    private Long id;
 
     /**
      * The user name that can be modified.
@@ -41,10 +45,11 @@ public class UserPrincipal extends User {
      *         either as a parameter or as an element in the
      *         <code>GrantedAuthority</code> collection
      */
-    public UserPrincipal(final String username, final String password, final boolean enabled,
+    public UserPrincipal(final Long id, final String username, final String password, final boolean enabled,
                          final boolean accountNonExpired, final boolean credentialsNonExpired, final boolean accountNonLocked,
                          final Collection<? extends GrantedAuthority> authorities) throws IllegalArgumentException {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        this.id = id;
         this.username = username;
     }
 
@@ -58,10 +63,19 @@ public class UserPrincipal extends User {
      *        if they presented the correct username and password and the user
      *        is enabled. Not null.
      */
-    public UserPrincipal(final String username, final String password,
+    public UserPrincipal(final Long id, final String username, final String password,
                          final Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
+        this.id = id;
         this.username = username;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
