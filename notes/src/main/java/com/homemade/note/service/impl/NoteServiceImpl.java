@@ -1,6 +1,7 @@
 package com.homemade.note.service.impl;
 
 import com.homemade.note.common.exception.NotFoundException;
+import com.homemade.note.common.exception.ValidationException;
 import com.homemade.note.domain.Note;
 import com.homemade.note.entity.NoteEntity;
 import com.homemade.note.repository.NoteRepository;
@@ -9,6 +10,7 @@ import com.homemade.note.service.UserService;
 import com.homemade.note.service.mapper.NoteMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,16 +37,19 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional
-    public Note createNote(Note note) {
-        if (userService.exist(note.getUserId())) {
-            NoteEntity noteEntity = noteMapper.map(note, NoteEntity.class);
-
-            noteEntity = noteRepository.save(noteEntity);
-
-            return noteMapper.map(noteEntity, Note.class);
-        } else {
+    public Note createNote(Long userId, Note note) {
+        if (userId != null && !userId.equals(note.getUserId())) {
+            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", userId, note.getUserId()));
+        }
+        if (!userService.exist(note.getUserId())) {
             throw new NotFoundException(String.format("User is not exist with id [%s]", note.getUserId()));
         }
+
+        NoteEntity noteEntity = noteMapper.map(note, NoteEntity.class);
+
+        noteEntity = noteRepository.save(noteEntity);
+
+        return noteMapper.map(noteEntity, Note.class);
     }
 
     @Override

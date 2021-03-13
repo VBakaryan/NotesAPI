@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface NoteService {
 
-    Note createNote(Note note);
+    Note createNote(Long userId, Note note);
 
     void updateNote(Long id, Note note);
 
@@ -16,5 +16,4 @@ public interface NoteService {
     List<Note> getNotesForUser(Long userId);
 
     void deleteNoteById(Long id);
-
 }

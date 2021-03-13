@@ -30,8 +30,8 @@ public class NoteController {
     // region <APIs>
 
     @PostMapping
-    public Note createNote(@RequestBody Note note) {
-        return noteService.createNote(note);
+    public Note createNote(@RequestParam("userId") Long userId, @RequestBody Note note) {
+        return noteService.createNote(userId, note);
     }
 
     @PutMapping(value = "/{id}")
