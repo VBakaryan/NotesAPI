@@ -15,3 +15,16 @@ server:
 logging:
   level:
     org.springframework.security: INFO
+
+microservices:
+  notes:
+    host: http://localhost:8061/noteapp
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: FULL
+        decode404: false
