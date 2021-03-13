@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    validation-query: SELECT 1 FROM dual
+    maximumPoolSize: 10
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/notes?createDatabaseIfNotExist=true&useUnicode=yes&useSSL=false&characterEncoding=UTF8&autoReconnect=true
+    username: <userName>
+    password: <password>
+
+server:
+  port: 8060
+  servlet:
+    context-path: /apigateway
+
+logging:
+  level:
+    org.springframework.security: INFO
