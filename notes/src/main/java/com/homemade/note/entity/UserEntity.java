@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -28,7 +29,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "t_user")
+@Table(name = "t_user", indexes = {
+                @Index(name = "IDX_DATE_CREATED", columnList = "date_created"),
+                @Index(name = "IDX_DATE_LAST_MODIFIED", columnList = "date_last_modified")
+})
 public class UserEntity extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 

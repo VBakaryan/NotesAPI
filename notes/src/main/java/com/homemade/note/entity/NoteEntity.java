@@ -14,11 +14,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 
 @Getter
@@ -27,7 +27,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "t_note")
+@Table(name = "t_note", indexes = {
+        @Index(name = "IDX_DATE_CREATED", columnList = "date_created"),
+        @Index(name = "IDX_DATE_LAST_MODIFIED", columnList = "date_last_modified")
+})
 public class NoteEntity extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
@@ -37,13 +40,11 @@ public class NoteEntity extends AbstractEntity {
     private Long id;
 
     @NotEmpty
-    @Size(max = 50)
-    @Column(name = "title")
+    @Column(name = "title", length = 50)
     private String title;
 
     @NotEmpty
-    @Size(max = 1000)
-    @Column(name = "note")
+    @Column(name = "note", columnDefinition = "LONGTEXT", length = 1000)
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
