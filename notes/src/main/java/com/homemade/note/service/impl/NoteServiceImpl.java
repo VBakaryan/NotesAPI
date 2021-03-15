@@ -81,6 +81,18 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
+    public List<Note> getNotes(Integer page, Integer size) {
+        List<NoteEntity> noteEntities;
+        if (page != null && size != null) {
+            noteEntities = noteRepository.getNotes(PageRequest.of(page, size)).getContent();
+        } else {
+            noteEntities = noteRepository.findAll();
+        }
+
+        return noteMapper.mapAsList(noteEntities, Note.class);
+    }
+
+    @Override
     @Transactional
     public void deleteNoteById(Long id) {
         noteRepository.deleteById(id);

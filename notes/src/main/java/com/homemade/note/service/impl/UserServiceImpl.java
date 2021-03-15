@@ -7,8 +7,11 @@ import com.homemade.note.service.UserService;
 import com.homemade.note.service.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Slf4j
@@ -34,6 +37,24 @@ public class UserServiceImpl implements UserService {
          UserEntity userEntity = userRepository.findByEmail(email);
 
         return userMapper.map(userEntity, User.class);
+    }
+
+    @Override
+    public List<User> getUsers(Boolean includeNotes, Integer page, Integer size) {
+        List<UserEntity> userEntities;
+        if (page != null && size != null) {
+            userEntities = userRepository.getAllUsers(PageRequest.of(page, size)).getContent();
+        } else {
+            userEntities = userRepository.findAll();
+        }
+
+        List<User> users = userMapper.mapAsList(userEntities, User.class);
+
+        if (!includeNotes) {
+            users.forEach(user -> user.setNotes(null));
+        }
+
+        return users;
     }
 
     @Override

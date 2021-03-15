@@ -50,6 +50,12 @@ public class NoteController {
         return noteService.getNotesForUser(userId);
     }
 
+    @GetMapping(value = "/batch")
+    public List<Note> getNotes(@RequestParam(value = "page", required = false) Integer page,
+                               @RequestParam(value = "size", required = false) Integer size) {
+        return noteService.getNotes(page, size);
+    }
+
     @DeleteMapping(value = "/{id}")
     public void deleteNoteById(@PathVariable("id") Long id) {
         noteService.deleteNoteById(id);

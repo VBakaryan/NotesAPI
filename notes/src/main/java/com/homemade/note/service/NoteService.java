@@ -15,5 +15,7 @@ public interface NoteService {
 
     List<Note> getNotesForUser(Long userId);
 
+    List<Note> getNotes(Integer page, Integer size);
+
     void deleteNoteById(Long id);
 }

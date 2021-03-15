@@ -1,6 +1,8 @@
 package com.homemade.note.repository;
 
 import com.homemade.note.entity.NoteEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +18,9 @@ public interface NoteRepository extends JpaRepository<NoteEntity, Long> {
 
     @Query("SELECT n FROM NoteEntity n WHERE n.userEntity.id = :userId")
     List<NoteEntity> getNotesByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT n FROM NoteEntity n")
+    Page<NoteEntity> getNotes(PageRequest pageRequest);
 
     @Transactional
     @Modifying(clearAutomatically = true)
