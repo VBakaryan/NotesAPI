@@ -19,3 +19,8 @@ server:
   port: 8061
   servlet:
     context-path: /noteapp
+
+settings:
+  test:
+    usersQuantity: 10
+    notesQuantity: 5000
