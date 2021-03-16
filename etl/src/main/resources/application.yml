@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    test-on-borrow: true
+    validation-query: SELECT 1 FROM dual
+    maximumPoolSize: 10
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/usernote?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF8&autoReconnect=true&useSSL=false
+    username: <username>
+    password: <password>
