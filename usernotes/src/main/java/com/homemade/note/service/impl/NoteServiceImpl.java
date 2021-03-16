@@ -38,12 +38,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional
     public Note createNote(Long userId, Note note) {
-        if (userId != null && !userId.equals(note.getUserId())) {
-            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", userId, note.getUserId()));
-        }
-        if (!userService.exist(note.getUserId())) {
-            throw new NotFoundException(String.format("User is not exist with id [%s]", note.getUserId()));
-        }
+        validateRequester(userId, note);
 
         NoteEntity noteEntity = noteMapper.map(note, NoteEntity.class);
 
@@ -54,8 +49,11 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional
-    public void updateNote(Long id, Note note) {
+    public void updateNote(Long id, Note note, Long requestingUserId) {
+        validateRequester(requestingUserId, note);
+
         if (noteRepository.existsById(id)) {
+            validateNoteData(note);
             noteRepository.updateNote(id, note.getTitle(), note.getNote());
         } else {
             throw new NotFoundException(String.format("Note is not exist with id [%s]", id));
@@ -63,25 +61,33 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note getNoteById(Long id) {
+    public Note getNoteById(Long id, Long requestingUserId) {
         Optional<NoteEntity> noteEntity = noteRepository.findById(id);
 
         if (noteEntity.isPresent()) {
-            return noteMapper.map(noteEntity.get(), Note.class);
+            Note note = noteMapper.map(noteEntity.get(), Note.class);
+
+            validateRequester(requestingUserId, note);
+
+            return note;
         } else {
             throw new NotFoundException(String.format("Note is not exist with id [%s]", id));
         }
     }
 
     @Override
-    public List<Note> getNotesForUser(Long userId) {
+    public List<Note> getNotesForUser(Long userId, Long requestingUserId) {
+        if (userId != null && !userId.equals(requestingUserId)) {
+            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", requestingUserId, userId));
+        }
+
         List<NoteEntity> notes = noteRepository.getNotesByUserId(userId);
 
         return noteMapper.mapAsList(notes, Note.class);
     }
 
     @Override
-    public List<Note> getNotes(Integer page, Integer size) {
+    public List<Note> getNotes(Integer page, Integer size, Long requestingUserId) {
         List<NoteEntity> noteEntities;
         if (page != null && size != null) {
             noteEntities = noteRepository.getNotes(PageRequest.of(page, size)).getContent();
@@ -94,10 +100,39 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional
-    public void deleteNoteById(Long id) {
-        noteRepository.deleteById(id);
+    public void deleteNoteById(Long id, Long requestingUserId) {
+        Optional<NoteEntity> noteEntity = noteRepository.findById(id);
+
+        if (noteEntity.isPresent()) {
+            Note note = noteMapper.map(noteEntity.get(), Note.class);
+
+            validateRequester(requestingUserId, note);
+
+            noteRepository.deleteById(id);
+        } else {
+            throw new NotFoundException(String.format("Note is not exist with id [%s]", id));
+        }
     }
 
     // endregion
+
+    private void validateRequester(Long userId, Note note) {
+        if (userId != null && !userId.equals(note.getUserId())) {
+            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", userId, note.getUserId()));
+        }
+    }
+
+    private void validateNoteData(Note note) {
+        if (note != null) {
+            if (note.getTitle() == null || note.getTitle().length() > 50) {
+                throw new ValidationException(String.format("Provided note title is null or exceeds the limit, note id [%s]", note.getId()));
+            }
+            if (note.getNote() == null || note.getNote().length() > 1000) {
+                throw new ValidationException(String.format("Provided note is null or exceeds the limit, note id [%s]", note.getId()));
+            }
+        } else {
+            throw new ValidationException("Note data is null");
+        }
+    }
 
 }

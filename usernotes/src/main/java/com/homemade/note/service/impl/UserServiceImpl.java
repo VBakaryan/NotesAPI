@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
+    // region <BUSINESS LOGIC>
+
     @Override
     public User getUserById(Long id) {
         return null;
@@ -61,5 +63,7 @@ public class UserServiceImpl implements UserService {
     public boolean exist(Long id) {
         return userRepository.existsById(id);
     }
+
+    // endregion
 
 }

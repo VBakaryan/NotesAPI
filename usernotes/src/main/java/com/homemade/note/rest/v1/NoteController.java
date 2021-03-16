@@ -30,35 +30,37 @@ public class NoteController {
     // region <APIs>
 
     @PostMapping
-    public Note createNote(@RequestParam("userId") Long userId, @RequestBody Note note) {
-        return noteService.createNote(userId, note);
+    public Note createNote(@RequestParam("userId") Long requestingUserId, @RequestBody Note note) {
+        return noteService.createNote(requestingUserId, note);
     }
 
     @PutMapping(value = "/{id}")
     public void updateNote(@PathVariable("id") Long id,
+                           @RequestParam("userId") Long requestingUserId,
                            @RequestBody Note note) {
-        noteService.updateNote(id, note);
+        noteService.updateNote(id, note, requestingUserId);
     }
 
     @GetMapping(value = "/{id}")
-    public Note getNoteById(@PathVariable("id") Long id) {
-        return noteService.getNoteById(id);
+    public Note getNoteById(@PathVariable("id") Long id, @RequestParam("userId") Long requestingUserId) {
+        return noteService.getNoteById(id, requestingUserId);
     }
 
     @GetMapping
-    public List<Note> getNotesForUser(@RequestParam("userId") Long userId) {
-        return noteService.getNotesForUser(userId);
+    public List<Note> getNotesForUser(@RequestParam("userId") Long userId, @RequestParam("userId") Long requestingUserId) {
+        return noteService.getNotesForUser(userId, requestingUserId);
     }
 
     @GetMapping(value = "/batch")
     public List<Note> getNotes(@RequestParam(value = "page", required = false) Integer page,
-                               @RequestParam(value = "size", required = false) Integer size) {
-        return noteService.getNotes(page, size);
+                               @RequestParam(value = "size", required = false) Integer size,
+                               @RequestParam("userId") Long requestingUserId) {
+        return noteService.getNotes(page, size, requestingUserId);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteNoteById(@PathVariable("id") Long id) {
-        noteService.deleteNoteById(id);
+    public void deleteNoteById(@PathVariable("id") Long id, @RequestParam("userId") Long requestingUserId) {
+        noteService.deleteNoteById(id, requestingUserId);
     }
 
     // endregion

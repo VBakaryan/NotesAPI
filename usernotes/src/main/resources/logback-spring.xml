@@ -4,9 +4,9 @@
     <!-- APPENDERS -->
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/notes.log</file>
+        <file>./logs/usernote.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>./logs/notes.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>./logs/usernote.%d{yyyy-MM-dd}.log</FileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>

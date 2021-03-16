@@ -9,13 +9,13 @@ public interface NoteService {
 
     Note createNote(Long userId, Note note);
 
-    void updateNote(Long id, Note note);
+    void updateNote(Long id, Note note, Long requestingUserId);
 
-    Note getNoteById(Long id);
+    Note getNoteById(Long id, Long requestingUserId);
 
-    List<Note> getNotesForUser(Long userId);
+    List<Note> getNotesForUser(Long userId, Long requestingUserId);
 
-    List<Note> getNotes(Integer page, Integer size);
+    List<Note> getNotes(Integer page, Integer size, Long requestingUserId);
 
-    void deleteNoteById(Long id);
+    void deleteNoteById(Long id, Long requestingUserId);
 }

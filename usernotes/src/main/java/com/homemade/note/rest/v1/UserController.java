@@ -3,6 +3,7 @@ package com.homemade.note.rest.v1;
 import com.homemade.note.domain.User;
 import com.homemade.note.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     private final UserService userService;
@@ -21,6 +22,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    // region <APIs>
 
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable("email") String email) {
@@ -33,5 +36,7 @@ public class UserController {
                                @RequestParam(value = "size", required = false) Integer size) {
         return userService.getUsers(includeNotes, page, size);
     }
+
+    // endregion
 
 }
