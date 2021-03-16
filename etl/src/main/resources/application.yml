@@ -7,3 +7,8 @@ spring:
     url: jdbc:mysql://localhost:3306/usernote?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF8&autoReconnect=true&useSSL=false
     username: <username>
     password: <password>
+
+server:
+  port: 8062
+  servlet:
+    context-path: /etl

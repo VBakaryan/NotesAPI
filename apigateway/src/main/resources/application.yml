@@ -3,7 +3,7 @@ spring:
     validation-query: SELECT 1 FROM dual
     maximumPoolSize: 10
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/notes?createDatabaseIfNotExist=true&useUnicode=yes&useSSL=false&characterEncoding=UTF8&autoReconnect=true
+    url: jdbc:mysql://localhost:3306/usernote?createDatabaseIfNotExist=true&useUnicode=yes&useSSL=false&characterEncoding=UTF8&autoReconnect=true
     username: <userName>
     password: <password>
 
