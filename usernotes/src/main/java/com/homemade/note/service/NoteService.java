@@ -13,7 +13,7 @@ public interface NoteService {
 
     Note getNoteById(Long id, Long requestingUserId);
 
-    List<Note> getNotesForUser(Long userId, Long requestingUserId);
+    List<Note> getNotesForUser(Long requestingUserId);
 
     List<Note> getNotes(Integer page, Integer size, Long requestingUserId);
 

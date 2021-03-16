@@ -28,9 +28,9 @@ public interface NoteApiClient {
     Note getNoteById(@PathVariable("id") Long id, @RequestParam("userId") Long requestingUserId);
 
     @GetMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    List<Note> getNotesForUser(@RequestParam("userId") Long userId, @RequestParam("userId") Long requestingUserId);
+    List<Note> getNotesForUser(@RequestParam("userId") Long requestingUserId);
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     void deleteNoteById(@PathVariable("id") Long id, @RequestParam("userId") Long requestingUserId);
 
 }

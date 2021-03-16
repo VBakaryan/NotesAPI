@@ -6,7 +6,6 @@ import com.homemade.note.domain.Note;
 import com.homemade.note.entity.NoteEntity;
 import com.homemade.note.repository.NoteRepository;
 import com.homemade.note.service.NoteService;
-import com.homemade.note.service.UserService;
 import com.homemade.note.service.mapper.NoteMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class NoteServiceImpl implements NoteService {
 
-    private final UserService userService;
     private final NoteRepository noteRepository;
     private final NoteMapper noteMapper;
     @Autowired
-    public NoteServiceImpl(UserService userService, NoteRepository noteRepository, NoteMapper noteMapper) {
-        this.userService = userService;
+    public NoteServiceImpl(NoteRepository noteRepository, NoteMapper noteMapper) {
         this.noteRepository = noteRepository;
         this.noteMapper = noteMapper;
     }
@@ -50,10 +47,14 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional
     public void updateNote(Long id, Note note, Long requestingUserId) {
-        validateRequester(requestingUserId, note);
+        validateNoteData(note);
 
-        if (noteRepository.existsById(id)) {
-            validateNoteData(note);
+        Optional<NoteEntity> noteEntity = noteRepository.findById(id);
+        if (noteEntity.isPresent()) {
+            if (!requestingUserId.equals(noteEntity.get().getId())) {
+                throw new ValidationException(String.format("Note [%s] does not belong to user [%s]", id, requestingUserId));
+            }
+
             noteRepository.updateNote(id, note.getTitle(), note.getNote());
         } else {
             throw new NotFoundException(String.format("Note is not exist with id [%s]", id));
@@ -76,12 +77,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<Note> getNotesForUser(Long userId, Long requestingUserId) {
-        if (userId != null && !userId.equals(requestingUserId)) {
-            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", requestingUserId, userId));
-        }
-
-        List<NoteEntity> notes = noteRepository.getNotesByUserId(userId);
+    public List<Note> getNotesForUser(Long requestingUserId) {
+        List<NoteEntity> notes = noteRepository.getNotesByUserId(requestingUserId);
 
         return noteMapper.mapAsList(notes, Note.class);
     }
@@ -118,7 +115,7 @@ public class NoteServiceImpl implements NoteService {
 
     private void validateRequester(Long userId, Note note) {
         if (userId != null && !userId.equals(note.getUserId())) {
-            throw new ValidationException(String.format("Requester [%s] and provided user [%s] mismatch", userId, note.getUserId()));
+            throw new ValidationException(String.format("Requester [%s] and actual user [%s] mismatch", userId, note.getUserId()));
         }
     }
 

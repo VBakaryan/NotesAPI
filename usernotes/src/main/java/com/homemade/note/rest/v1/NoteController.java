@@ -46,9 +46,9 @@ public class NoteController {
         return noteService.getNoteById(id, requestingUserId);
     }
 
-    @GetMapping
-    public List<Note> getNotesForUser(@RequestParam("userId") Long userId, @RequestParam("userId") Long requestingUserId) {
-        return noteService.getNotesForUser(userId, requestingUserId);
+    @GetMapping(value = "/user")
+    public List<Note> getNotesForUser(@RequestParam("userId") Long requestingUserId) {
+        return noteService.getNotesForUser(requestingUserId);
     }
 
     @GetMapping(value = "/batch")

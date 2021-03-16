@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -53,10 +52,10 @@ public class NoteApiGatewayController {
     }
 
     @GetMapping("/user")
-    public List<Note> getNotesForUser(@RequestParam("userId") Long userId) {
+    public List<Note> getNotesForUser() {
         Long requestingUserId = authorizationFacade.getCurrentUserID();
 
-        return noteApiClient.getNotesForUser(userId, requestingUserId);
+        return noteApiClient.getNotesForUser(requestingUserId);
     }
 
     @DeleteMapping(value = "/{id}")
