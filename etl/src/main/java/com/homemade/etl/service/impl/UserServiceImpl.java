@@ -3,7 +3,6 @@ package com.homemade.etl.service.impl;
 
 import com.homemade.etl.domain.User;
 import com.homemade.etl.repository.UserRepository;
-import com.homemade.etl.service.CommonService;
 import com.homemade.etl.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService, CommonService<User> {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     @Autowired

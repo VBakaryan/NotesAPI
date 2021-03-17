@@ -31,6 +31,7 @@ public class EtlApplication {
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setThreadNamePrefix("Etl-Async-");
+        executor.initialize();
         return executor;
     }
 

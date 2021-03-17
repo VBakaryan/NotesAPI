@@ -2,7 +2,6 @@ package com.homemade.etl.service.impl;
 
 import com.homemade.etl.domain.Note;
 import com.homemade.etl.repository.NoteRepository;
-import com.homemade.etl.service.CommonService;
 import com.homemade.etl.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class NoteServiceImpl implements NoteService, CommonService<Note> {
+public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
     @Autowired

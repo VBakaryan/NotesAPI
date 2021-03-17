@@ -1,9 +1,11 @@
 package com.homemade.etl.executor;
 
-
 import com.homemade.etl.converter.JsonConverter;
 import com.homemade.etl.converter.ParquetConverter;
+import com.homemade.etl.domain.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -11,21 +13,25 @@ import java.util.concurrent.BlockingQueue;
 
 
 @Slf4j
-public class EtlExecutor<T> implements Runnable {
+@Component
+@SuppressWarnings("Duplicates")
+@Scope("prototype")
+public class EtlUserExecutor implements Runnable {
 
-    private final String fileName;
-    private final BlockingQueue<Map<Integer, List<T>>> queue;
+    private String fileName;
+    private BlockingQueue<Map<Integer, List<User>>> queue;
 
-    public EtlExecutor(BlockingQueue<Map<Integer, List<T>>> queue, String fileName) {
+    public EtlUserExecutor setInputData(ExecutorInputData executorInputData, BlockingQueue<Map<Integer, List<User>>> queue) {
         this.queue = queue;
-        this.fileName = fileName;
+        this.fileName = executorInputData.getFileName();
+        return this;
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                Map<Integer, List<T>> processingData = queue.take();
+                Map<Integer, List<User>> processingData = queue.take();
 
                 processingData.forEach((key, value) -> {
                     if (value != null && !value.isEmpty()) {
@@ -54,5 +60,4 @@ public class EtlExecutor<T> implements Runnable {
             }
         }
     }
-
 }
