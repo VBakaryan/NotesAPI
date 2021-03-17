@@ -1,0 +1,51 @@
+--------------------------------------------
+>>> Create oauth2 token for provided user
+
+        curl --location --request POST 'http://localhost:8060/apigateway/oauth/token?grant_type=password&username={{username}}&password={{password}}' \
+        --header 'Authorization: Basic bm90ZXM6c2VjcmV0' \
+
+--------------------------------------------
+>>> Create note for user
+
+        curl --location --request POST 'http://localhost:8060/apigateway/api/v1/notes' \
+        --header 'Authorization: Bearer {{oauth2_token}}' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "title": "Bank Payment",
+            "note": "Pay 1000 euro for rent",
+            "userId": {{userId}}
+        }'
+
+--------------------------------------------
+>>> Update note data for provided id
+
+        curl --location --request PUT 'http://localhost:8060/apigateway/api/v1/notes/{{noteId}}' \
+        --header 'Authorization: Bearer {{oauth2_token}}' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "title" : "Bank Payment 2",
+            "note": "Pay 200000 amd for rent",
+            "userId": {{userId}}
+        }'
+
+--------------------------------------------
+>>> Get note for provided id
+
+        curl --location --request GET 'http://localhost:8060/apigateway/api/v1/notes/{{noteId}}' \
+        --header 'Authorization: Bearer {{oauth2_token}}' \
+        --header 'Content-Type: application/json' \
+
+--------------------------------------------
+>>> Get notes for user
+
+        curl --location --request GET 'http://localhost:8060/apigateway/api/v1/notes/user' \
+        --header 'Authorization: Bearer {{oauth2_token}}' \
+        --header 'Content-Type: application/json' \
+
+
+--------------------------------------------
+>>> Delete note for provided id
+
+        curl --location --request DELETE 'http://localhost:8060/apigateway/api/v1/notes/{{noteId}}' \
+        --header 'Authorization: Bearer {{oauth2_token}}' \
+        --header 'Content-Type: application/json' \
