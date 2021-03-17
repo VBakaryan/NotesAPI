@@ -1,0 +1,96 @@
+version: '3.7'
+
+services:
+  apigateway:
+    build:
+      context: apigateway
+      dockerfile: Dockerfile
+    ports:
+      - "8060:8060"
+    restart: always
+    depends_on:
+      - apigateway_db
+      - usernotes
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://apigateway_db:3306/apigateway?createDatabaseIfNotExist=true&useUnicode=yes&useSSL=false&characterEncoding=UTF8&autoReconnect=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      MICROSERVICES_NOTES_HOST: http://usernotes:8061/noteapp
+    networks:
+      - ag_db_network
+      - un_network
+
+  usernotes:
+    build:
+      context: usernotes
+      dockerfile: Dockerfile
+    ports:
+      - "8061:8061"
+    restart: always
+    depends_on:
+      - usernote_db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://usernote_db:3306/usernote?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF8&autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    networks:
+      - un_db_network
+      - un_network
+
+  etl:
+    build:
+      context: etl
+      dockerfile: Dockerfile
+    ports:
+      - "8062:8062"
+    restart: always
+    depends_on:
+      - usernote_db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://usernote_db:3306/usernote?createDatabaseIfNotExist=true&useUnicode=yes&characterEncoding=UTF8&autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    networks:
+      - un_db_network
+
+  # Database Service (Mysql)
+  apigateway_db:
+    image: mysql:5.7
+    ports:
+      - "3326:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: usernote
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ag_db_data:/var/lib/mysql
+    networks:
+      - ag_db_network
+
+  usernote_db:
+    image: mysql:5.7
+    ports:
+      - "3336:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: apigateway
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - un_db_data:/var/lib/mysql
+    networks:
+      - un_db_network
+
+# Volumes
+volumes:
+  ag_db_data:
+  un_db_data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  ag_db_network:
+  un_db_network:
+  un_network:
