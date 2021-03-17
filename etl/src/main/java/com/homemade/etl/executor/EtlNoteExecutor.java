@@ -21,10 +21,13 @@ public class EtlNoteExecutor implements Runnable {
 
     private String fileName;
     private BlockingQueue<Map<Integer, List<Note>>> queue;
+    private BlockingQueue<String> fileNameQueue;
 
-    public EtlNoteExecutor setInputData(ExecutorInputData executorInputData, BlockingQueue<Map<Integer, List<Note>>> queue) {
+    public EtlNoteExecutor setInputData(ExecutorInputData executorInputData, BlockingQueue<Map<Integer, List<Note>>> queue,
+                                        BlockingQueue<String> fileNameQueue) {
         this.queue = queue;
         this.fileName = executorInputData.getFileName();
+        this.fileNameQueue = fileNameQueue;
         return this;
     }
 
@@ -40,7 +43,8 @@ public class EtlNoteExecutor implements Runnable {
 
                         try {
                             JsonConverter.convertAndStoreJsonFile(value, fileNameWithKey);
-                            log.info(">>>Json file was converted with name {}", fileNameWithKey);
+                            log.info(">>> Json file was converted with name {}", fileNameWithKey);
+                            fileNameQueue.put(fileNameWithKey);
                         } catch (Exception ex) {
                             log.error("Error occurred while converting provided data to json file");
                             //TODO: keep failed data for retry process
@@ -48,7 +52,8 @@ public class EtlNoteExecutor implements Runnable {
 
                         try {
                             ParquetConverter.convertAndStoreParquetFile(value, fileNameWithKey);
-                            log.info(">>>Parquet file was converted with name {}", fileNameWithKey);
+                            log.info(">>> Parquet file was converted with name {}", fileNameWithKey);
+                            fileNameQueue.put(fileNameWithKey);
                         } catch (Exception ex) {
                             log.error("Error occurred while converting provided data to parquet file");
                             //TODO: keep failed data for retry process

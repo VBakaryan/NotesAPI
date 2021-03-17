@@ -20,10 +20,13 @@ public class EtlUserExecutor implements Runnable {
 
     private String fileName;
     private BlockingQueue<Map<Integer, List<User>>> queue;
+    private BlockingQueue<String> fileNameQueue;
 
-    public EtlUserExecutor setInputData(ExecutorInputData executorInputData, BlockingQueue<Map<Integer, List<User>>> queue) {
+    public EtlUserExecutor setInputData(ExecutorInputData executorInputData, BlockingQueue<Map<Integer, List<User>>> queue,
+                                        BlockingQueue<String> fileNameQueue) {
         this.queue = queue;
         this.fileName = executorInputData.getFileName();
+        this.fileNameQueue = fileNameQueue;
         return this;
     }
 
@@ -40,6 +43,7 @@ public class EtlUserExecutor implements Runnable {
                         try {
                             JsonConverter.convertAndStoreJsonFile(value, fileNameWithKey);
                             log.info(">>>Json file was converted with name {}", fileNameWithKey);
+                            fileNameQueue.put(fileNameWithKey);
                         } catch (Exception ex) {
                             log.error("Error occurred while converting provided data to json file");
                             //TODO: keep failed data for retry process
@@ -48,6 +52,7 @@ public class EtlUserExecutor implements Runnable {
                         try {
                             ParquetConverter.convertAndStoreParquetFile(value, fileNameWithKey);
                             log.info(">>>Parquet file was converted with name {}", fileNameWithKey);
+                            fileNameQueue.put(fileNameWithKey);
                         } catch (Exception ex) {
                             log.error("Error occurred while converting provided data to parquet file");
                             //TODO: keep failed data for retry process
